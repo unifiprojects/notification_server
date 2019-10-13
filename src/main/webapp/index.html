@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Notification server</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <script src="websocket.js"></script>
+    </head>
+    <body>
+        <div>
+            <h1>Java Websocket Topic</h1>
+            <p>Welcome to the Java WebSocket Topic. Please subscribe to Topic or send notifications.</p>
+            <br/>
+            <div>
+                <form id="subscribeForm">
+                    <h3>Subscribe</h3>
+                    <span>Topic: <input type="text" name="topic_name" id="topic_name"></span>
+                    <input type="button" class="button" value="Subscribe" onclick=formSubscribe()>
+                </form>
+            </div>
+            
+            <div>
+                <form id="publishForm">
+                    <h3>Publish a message</h3>
+                    <span>Topic: <input type="text" name="topic_name" id="topic_name"></span>
+                    <span>Message: <input type="text" name="topic_message" id="topic_message"></span>
+                    <input type="button" class="button" value="Publish" onclick=formPublish()>
+                </form>
+            </div>
+        </div>
+
+    </body>
+</html>
