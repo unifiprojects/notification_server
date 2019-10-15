@@ -25,12 +25,13 @@ public class WebSocketServer {
 
     @OnOpen
     public void open(Session session) {
-        userSessionHandler.addSession(session);
+        Logger.getLogger(UserSessionHandler.class.getName()).info("Session: " + session.getId() + " has opened a connection with the server.");
     }
 
     @OnClose
     public void close(Session session) {
-        //userSessionHandler.removeSession(session);
+        userSessionHandler.removeNotificationsForSession(session);
+        Logger.getLogger(UserSessionHandler.class.getName()).info("Session: " + session.getId() + " has closed the connection with the server.");
     }
 
     @OnError

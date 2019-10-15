@@ -1,3 +1,4 @@
+package com.matteomauro.notification_server.repository;
 
 import static org.hamcrest.core.IsEqual.*;
 import static org.junit.Assert.*;
@@ -15,8 +16,9 @@ import org.redisson.config.Config;
  */
 /**
  *
- * Remember to download Redis and instantiate a container
- * docker run --name redis -p 6379:6379 redis:5.0.6
+ * Remember to download Redis and instantiate a container docker run --name
+ * redis -p 6379:6379 redis:5.0.6
+ *
  * @author matteo
  */
 public class RedisTestIT {
