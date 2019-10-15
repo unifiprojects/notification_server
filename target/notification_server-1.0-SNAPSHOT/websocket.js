@@ -3,9 +3,29 @@ socket.onmessage = onMessage;
 
 function onMessage(event) {
     var notification = JSON.parse(event.data);
-    alert("topic: " + notification.topic + "\nmessage: " + notification.message);
+    if(!window.Push.Permission.has()){
+        console.log("permission requested")
+        window.Push.Permission.request(onGranted, onDenied);
+    }else{
+        console.log("permission already requested");
+        onGranted(notification);
+    }
 }
 
+//Notification
+function onGranted(notification){
+    console.log("permission granted");
+    window.Push.create("topic:" + notification.topic, {
+        body: "message: " + notification.message,
+        timeout: 4000,
+    });
+}
+
+function onDenied() {
+    alert("Can't get permission for notification.");
+}
+
+//Page
 function formSubscribe() {
     var form = document.getElementById("subscribeForm");
     var nameTopic = form.elements["topic_name"].value;

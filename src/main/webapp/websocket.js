@@ -1,4 +1,4 @@
-var socket = new WebSocket("ws://localhost:8080/notification_server-1.0-SNAPSHOT/topic");
+var socket = new WebSocket("ws://localhost:8080/notification_server/topic");
 socket.onmessage = onMessage;
 
 function onMessage(event) {
