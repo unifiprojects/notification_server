@@ -2,14 +2,18 @@ package com.matteomauro.notification_server;
 
 import com.matteomauro.notification_server.model.Topic;
 import com.matteomauro.notification_server.repository.RedisRepository;
-import java.io.IOException;
+
 import javax.enterprise.context.ApplicationScoped;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.inject.Inject;
 import javax.json.JsonObject;
 import javax.json.spi.JsonProvider;
 import javax.websocket.Session;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @ApplicationScoped
 public class UserSessionHandler {
@@ -17,16 +21,19 @@ public class UserSessionHandler {
     @Inject
     private RedisRepository repositoryNotifications;
 
+    private List<Session> sessions = new LinkedList<>();
+
     public void subscribeToTopic(Topic topic, Session session) {
-        repositoryNotifications.insertNotification(topic, session);
+        repositoryNotifications.insertNotification(topic, session.getId());
         Logger.getLogger(UserSessionHandler.class.getName()).info("Session: " + session + " has subscribed to topic: " + topic);
     }
 
     public void sendNotifications(Topic topic, String message) {
+        Collection<String> ids = repositoryNotifications.getAllSessionsId(topic);
         JsonObject messageJson = buildJsonMessage(topic, message);
-        for (Session session : repositoryNotifications.getAllSessions(topic)) {
-            sendToSession(session, messageJson.toString());
-        }
+        sessions.stream().
+                filter(session -> ids.contains(session.getId())).
+                forEach(session -> sendToSession(session, messageJson.toString()));
     }
 
     private JsonObject buildJsonMessage(Topic topic, String message) {
@@ -47,7 +54,15 @@ public class UserSessionHandler {
     }
 
     void removeNotificationsForSession(Session session) {
-        repositoryNotifications.removeAllNotificationsForUser(session);
+        repositoryNotifications.removeAllNotificationsForUser(session.getId());
     }
 
+    public void addSession(Session session) {
+        sessions.add(session);
+    }
+
+    public void removeSession(Session session) {
+        removeNotificationsForSession(session);
+        sessions.remove(session);
+    }
 }

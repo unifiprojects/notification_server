@@ -25,11 +25,13 @@ public class WebSocketServer {
 
     @OnOpen
     public void open(Session session) {
+        userSessionHandler.addSession(session);
         Logger.getLogger(UserSessionHandler.class.getName()).info("Session: " + session.getId() + " has opened a connection with the server.");
     }
 
     @OnClose
     public void close(Session session) {
+        userSessionHandler.removeSession(session);
         userSessionHandler.removeNotificationsForSession(session);
         Logger.getLogger(UserSessionHandler.class.getName()).info("Session: " + session.getId() + " has closed the connection with the server.");
     }
@@ -46,7 +48,6 @@ public class WebSocketServer {
             JsonObject jsonMessage = reader.readObject();
 
             if ("subscribe".equals(jsonMessage.getString("action"))) {
-                System.out.println(jsonMessage);
                 Topic topic = new Topic(jsonMessage.getString("topic_name"));
                 userSessionHandler.subscribeToTopic(topic, session);
             } else if ("publish".equals(jsonMessage.getString("action"))) {

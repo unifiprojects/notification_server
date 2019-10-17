@@ -33,9 +33,9 @@ public class RedisRepositoryIT {
         Topic topic = new Topic("test1");
         Session session1 = mock(Session.class);
         Session session2 = mock(Session.class);
-        repository.insertNotification(topic, session1);
-        repository.insertNotification(topic, session2);
-        assertThat(repository.getAllSessions(topic)).containsExactly(session1, session2);
+        repository.insertNotification(topic, session1.getId());
+        repository.insertNotification(topic, session2.getId());
+        assertThat(repository.getAllSessionsId(topic)).containsExactly(session1.getId(), session2.getId());
     }
 
 }
