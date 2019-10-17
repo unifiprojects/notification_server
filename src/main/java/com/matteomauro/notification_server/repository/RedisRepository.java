@@ -38,7 +38,6 @@ public class RedisRepository {
 
     public void removeAllNotificationsForUser(String sessionId) {
         notifications_map.keySet().stream().forEach(topic -> removeNotification(topic, sessionId));
-        //todo be tested
     }
 
     public String getPORT() {
