@@ -15,7 +15,7 @@ public class RedisRepository {
     private final String PORT = "6379";
     private final String URL = "redis://127.0.0.1:";
     private final String NOTIFICATION_MAP = "notifications";
-    private final RMultimap<Topic, String> notifications_map;
+    final RMultimap<Topic, String> notifications_map; // todo package private is not correct
 
     public RedisRepository() {
         Config config = new Config();
@@ -36,8 +36,20 @@ public class RedisRepository {
         return notifications_map.getAll(topic);
     }
 
-    public void removeAllNotificationsForUser( String sessionId) {
-        notifications_map.values().clear();
+    public void removeAllNotificationsForUser(String sessionId) {
+        notifications_map.keySet().stream().forEach(topic -> removeNotification(topic, sessionId));
         //todo be tested
+    }
+
+    public String getPORT() {
+        return PORT;
+    }
+
+    public String getURL() {
+        return URL;
+    }
+
+    public String getNOTIFICATION_MAP() {
+        return NOTIFICATION_MAP;
     }
 }
