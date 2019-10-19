@@ -44,7 +44,7 @@ public class RedisRepositoryIT {
 
         repository.insertNotification(topic, session1.getId());
         repository.insertNotification(topic, session2.getId());
-        assertThat(repository.getAllSessionsId(topic)).containsExactly(session1.getId(), session2.getId());
+        assertThat(repository.getAllSessionsId(topic)).containsExactlyInAnyOrder(session1.getId(), session2.getId());
     }
 
     @Test
