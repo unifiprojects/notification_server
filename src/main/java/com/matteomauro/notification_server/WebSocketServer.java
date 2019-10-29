@@ -20,9 +20,12 @@ import javax.json.JsonReader;
 @ServerEndpoint("/topic")
 public class WebSocketServer {
 
-    @Inject
     private UserSessionHandler userSessionHandler;
 
+    public WebSocketServer() {
+        this.userSessionHandler = new UserSessionHandler();
+    }
+    
     @OnOpen
     public void open(Session session) {
         userSessionHandler.addSession(session);

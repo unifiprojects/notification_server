@@ -18,8 +18,11 @@ import java.util.logging.Logger;
 @ApplicationScoped
 public class UserSessionHandler {
 
-    @Inject
     private RedisRepository repositoryNotifications;
+
+    public UserSessionHandler() {
+        this.repositoryNotifications = new RedisRepository();
+    }
 
     private List<Session> sessions = new LinkedList<>();
 
