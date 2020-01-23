@@ -4,7 +4,6 @@ import com.matteomauro.notification_server.model.Topic;
 import com.matteomauro.notification_server.repository.RedisRepository;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import javax.json.JsonObject;
 import javax.json.spi.JsonProvider;
 import javax.websocket.Session;
