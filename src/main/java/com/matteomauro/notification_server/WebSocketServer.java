@@ -45,7 +45,7 @@ public class WebSocketServer {
 
     @OnMessage
     public void handleMessage(String requestMessage, Session session) {
-        Logger.getLogger(WebSocketServer.class.getName()).info("Handling message for session: " + session);
+        Logger.getLogger(WebSocketServer.class.getName()).info("Handling message for session: " + session.getId());
         try ( JsonReader reader = Json.createReader(new StringReader(requestMessage))) {
             JsonObject jsonMessage = reader.readObject();
 

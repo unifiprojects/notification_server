@@ -27,7 +27,7 @@ public class UserSessionHandler {
 
     public void subscribeToTopic(Topic topic, Session session) {
         repositoryNotifications.insertNotification(topic, session.getId());
-        Logger.getLogger(UserSessionHandler.class.getName()).info("Session: " + session + " has subscribed to topic: " + topic);
+        Logger.getLogger(UserSessionHandler.class.getName()).info("Session: " + session.getId() + " has subscribed to topic: " + topic.getName());
     }
 
     public void sendNotifications(Topic topic, String message) {
