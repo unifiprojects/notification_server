@@ -17,25 +17,36 @@ import java.util.logging.Logger;
 @ApplicationScoped
 public class UserSessionHandler {
 
-    private RedisRepository repositoryNotifications;
+    private static UserSessionHandler userSessionHandlerSingleton = null;
+    private final RedisRepository repositoryNotifications;
+    private final List<Session> sessions;
 
-    public UserSessionHandler() {
+    private UserSessionHandler() {
         this.repositoryNotifications = new RedisRepository();
+        sessions = new LinkedList<>();
     }
 
-    private List<Session> sessions = new LinkedList<>();
+    public static UserSessionHandler getInstance() {
+        if (userSessionHandlerSingleton == null) {
+            userSessionHandlerSingleton = new UserSessionHandler();
+        }
+        return userSessionHandlerSingleton;
+    }
 
     public void subscribeToTopic(Topic topic, Session session) {
         repositoryNotifications.insertNotification(topic, session.getId());
-        Logger.getLogger(UserSessionHandler.class.getName()).info("Session: " + session.getId() + " has subscribed to topic: " + topic.getName());
+        Logger.getLogger(UserSessionHandler.class.getName()).info("\tSession: " + session.getId() + " has subscribed to topic: " + topic.getName());
     }
 
     public void sendNotifications(Topic topic, String message) {
         Collection<String> ids = repositoryNotifications.getAllSessionsId(topic);
         JsonObject messageJson = buildJsonMessage(topic, message);
-        sessions.stream().
-                filter(session -> ids.contains(session.getId())).
-                forEach(session -> sendToSession(session, messageJson.toString()));
+        for (Session session : sessions) {
+            if (ids.contains(session.getId())) {
+                Logger.getLogger(UserSessionHandler.class.getName()).info("\tSending notification to session: " + session.getId());
+                sendToSession(session, messageJson.toString());
+            }
+        }
     }
 
     private JsonObject buildJsonMessage(Topic topic, String message) {

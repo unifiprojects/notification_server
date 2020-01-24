@@ -15,7 +15,7 @@ public class RedisRepository {
     private final String PORT = "6379";
     private final String URL = "redis://127.0.0.1:";
     private final String NOTIFICATION_MAP = "notifications";
-    final RMultimap<Topic, String> notifications_map; // todo package private is not correct
+    final RMultimap<Topic, String> notifications_map; // package scope for IT test
 
     public RedisRepository() {
         Config config = new Config();
