@@ -1,13 +1,9 @@
 package com.matteomauro.notification_server.server;
 
-import com.matteomauro.notification_server.client.WebSocketClient;
 import com.matteomauro.notification_server.model.Topic;
 import java.io.StringReader;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.annotation.PostConstruct;
 import javax.websocket.OnClose;
 import javax.websocket.OnError;
 import javax.websocket.OnMessage;
@@ -29,27 +25,17 @@ public class WebSocketServer {
         this.userSessionHandler = UserSessionHandler.getInstance();
     }
 
-    @PostConstruct
-    private void connectclient() {
-        Logger.getLogger(WebSocketServer.class.getName()).info("Chiamata a PostConstruct");
-        try {
-            WebSocketClient client = new WebSocketClient(new URI("ws://localhost:8080/notification_server/topic"));
-        } catch (URISyntaxException ex) {
-            Logger.getLogger(WebSocketServer.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
     @OnOpen
     public void open(Session session) {
         userSessionHandler.addSession(session);
-        Logger.getLogger(UserSessionHandler.class.getName()).info("Session: " + session.getId() + " has opened a connection with the server.");
+        Logger.getLogger(WebSocketServer.class.getName()).info("Session: " + session.getId() + " has opened a connection with the server.");
     }
 
     @OnClose
     public void close(Session session) {
         userSessionHandler.removeSession(session);
         userSessionHandler.removeNotificationsForSession(session);
-        Logger.getLogger(UserSessionHandler.class.getName()).info("Session: " + session.getId() + " has closed the connection with the server.");
+        Logger.getLogger(WebSocketServer.class.getName()).info("Session: " + session.getId() + " has closed the connection with the server.");
     }
 
     @OnError
@@ -59,7 +45,7 @@ public class WebSocketServer {
 
     @OnMessage
     public void handleMessage(String requestMessage, Session session) {
-        Logger.getLogger(WebSocketServer.class.getName()).info("\nHandling message for session: " + session.getId());
+        Logger.getLogger(WebSocketServer.class.getName()).info("\nHandling message for session: " + session.getId() + "\nMessage: " + requestMessage);
         try (JsonReader reader = Json.createReader(new StringReader(requestMessage))) {
             JsonObject jsonMessage = reader.readObject();
 

@@ -1,9 +1,9 @@
 package com.matteomauro.notification_server.client;
 
 import com.matteomauro.notification_server.model.Topic;
-import com.matteomauro.notification_server.server.WebSocketServer;
 import java.io.IOException;
 import java.net.URI;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.json.JsonObject;
 import javax.json.spi.JsonProvider;
@@ -71,6 +71,14 @@ public class WebSocketClient {
                 .add("message", message)
                 .build();
         return messageJson;
+    }
+
+    public void close() {
+        try {
+            userSession.close();
+        } catch (IOException ex) {
+            Logger.getLogger(WebSocketClient.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
 }
