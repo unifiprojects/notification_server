@@ -1,9 +1,13 @@
-package com.matteomauro.notification_server;
+package com.matteomauro.notification_server.server;
 
+import com.matteomauro.notification_server.client.WebSocketClient;
 import com.matteomauro.notification_server.model.Topic;
 import java.io.StringReader;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.PostConstruct;
 import javax.websocket.OnClose;
 import javax.websocket.OnError;
 import javax.websocket.OnMessage;
@@ -19,12 +23,22 @@ import javax.json.JsonReader;
 @ServerEndpoint("/topic")
 public class WebSocketServer {
 
-    private UserSessionHandler userSessionHandler;
+    private final UserSessionHandler userSessionHandler;
 
     public WebSocketServer() {
         this.userSessionHandler = UserSessionHandler.getInstance();
     }
-    
+
+    @PostConstruct
+    private void connectclient() {
+        Logger.getLogger(WebSocketServer.class.getName()).info("Chiamata a PostConstruct");
+        try {
+            WebSocketClient client = new WebSocketClient(new URI("ws://localhost:8080/notification_server/topic"));
+        } catch (URISyntaxException ex) {
+            Logger.getLogger(WebSocketServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     @OnOpen
     public void open(Session session) {
         userSessionHandler.addSession(session);
@@ -46,7 +60,7 @@ public class WebSocketServer {
     @OnMessage
     public void handleMessage(String requestMessage, Session session) {
         Logger.getLogger(WebSocketServer.class.getName()).info("\nHandling message for session: " + session.getId());
-        try ( JsonReader reader = Json.createReader(new StringReader(requestMessage))) {
+        try (JsonReader reader = Json.createReader(new StringReader(requestMessage))) {
             JsonObject jsonMessage = reader.readObject();
 
             if ("subscribe".equals(jsonMessage.getString("action"))) {

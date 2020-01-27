@@ -1,4 +1,4 @@
-package com.matteomauro.notification_server;
+package com.matteomauro.notification_server.server;
 
 import com.matteomauro.notification_server.model.Topic;
 import com.matteomauro.notification_server.repository.RedisRepository;
