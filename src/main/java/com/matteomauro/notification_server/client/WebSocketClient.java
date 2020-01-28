@@ -52,6 +52,7 @@ public class WebSocketClient {
 
     public void sendMessage(String action, String topic, String message) {
         JsonObject messageJson = buildJsonMessage(action, new Topic(topic), message);
+
         if (userSession != null && userSession.isOpen()) {
             try {
                 this.userSession.getBasicRemote().sendText(messageJson.toString());
@@ -67,8 +68,8 @@ public class WebSocketClient {
         JsonProvider provider = JsonProvider.provider();
         JsonObject messageJson = provider.createObjectBuilder()
                 .add("action", action)
-                .add("topic", topic.getName())
-                .add("message", message)
+                .add("topic_name", topic.getName())
+                .add("topic_message", message)
                 .build();
         return messageJson;
     }
