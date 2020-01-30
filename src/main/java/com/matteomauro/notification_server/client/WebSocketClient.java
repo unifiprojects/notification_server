@@ -50,7 +50,15 @@ public class WebSocketClient {
         Logger.getLogger(WebSocketClient.class.getName()).info("Message received at client: " + message);
     }
 
-    public void sendMessage(String action, String topic, String message) {
+    public void subscribe(String topic) {
+        sendMessage("subscribe", topic, null);
+    }
+
+    public void publish(String topic, String message) {
+        sendMessage("publish", topic, message);
+    }
+
+    private void sendMessage(String action, String topic, String message) {
         JsonObject messageJson = buildJsonMessage(action, new Topic(topic), message);
 
         if (userSession != null && userSession.isOpen()) {
@@ -66,11 +74,19 @@ public class WebSocketClient {
 
     private JsonObject buildJsonMessage(String action, Topic topic, String message) {
         JsonProvider provider = JsonProvider.provider();
-        JsonObject messageJson = provider.createObjectBuilder()
-                .add("action", action)
-                .add("topic_name", topic.getName())
-                .add("topic_message", message)
-                .build();
+        JsonObject messageJson;
+        if (message == null) {
+            messageJson = provider.createObjectBuilder()
+                    .add("action", action)
+                    .add("topic_name", topic.getName())
+                    .build();
+        } else {
+            messageJson = provider.createObjectBuilder()
+                    .add("action", action)
+                    .add("topic_name", topic.getName())
+                    .add("topic_message", message)
+                    .build();
+        }
         return messageJson;
     }
 
