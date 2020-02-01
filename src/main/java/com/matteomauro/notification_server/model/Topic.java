@@ -1,8 +1,9 @@
 package com.matteomauro.notification_server.model;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Topic {
+public class Topic implements Serializable {
 
     private String name;
 

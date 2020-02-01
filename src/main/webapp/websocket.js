@@ -1,4 +1,4 @@
-var socket = new WebSocket("ws://localhost:8080/notification_server/topic");
+var socket = new WebSocket("ws://localhost:8080/topic");
 socket.onmessage = onMessage;
 
 function onMessage(event) {
@@ -27,16 +27,17 @@ function onDenied() {
 
 //Page
 function formSubscribe() {
-    var form = document.getElementById("subscribeForm");
-    var nameTopic = form.elements["topic_name"].value;
+    var form = document.getElementById("addToFollowed_form");
+    var nameTopic = form.elements["followedToAdd"].value;
     subscribeTopic(nameTopic);
 }
 
 function formPublish() {
-    var form = document.getElementById("publishForm");
-    var nameTopic = form.elements["topic_name"].value;
-    var message = form.elements["topic_message"].value;
-    publishTopic(nameTopic, message);
+    var form = document.getElementById("like_form");
+    var topic = form.elements["topicName"].value;
+    var game = form.elements["gameToAdd"].value;
+    console.log(topic + " " + game);
+    publishTopic(topic, game);
 }
 
 function subscribeTopic(nameTopic) {

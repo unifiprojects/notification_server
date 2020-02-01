@@ -1,4 +1,4 @@
-package com.matteomauro.notification_server;
+package com.matteomauro.notification_server.server;
 
 import com.matteomauro.notification_server.model.Topic;
 import java.io.StringReader;
@@ -11,7 +11,6 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
@@ -20,17 +19,23 @@ import javax.json.JsonReader;
 @ServerEndpoint("/topic")
 public class WebSocketServer {
 
-    @Inject
-    private UserSessionHandler userSessionHandler;
+    private final UserSessionHandler userSessionHandler;
+
+    public WebSocketServer() {
+        this.userSessionHandler = UserSessionHandler.getInstance();
+    }
 
     @OnOpen
     public void open(Session session) {
         userSessionHandler.addSession(session);
+        Logger.getLogger(WebSocketServer.class.getName()).info("Session: " + session.getId() + " has opened a connection with the server.");
     }
 
     @OnClose
     public void close(Session session) {
-        //userSessionHandler.removeSession(session);
+        userSessionHandler.removeSession(session);
+        userSessionHandler.removeNotificationsForSession(session);
+        Logger.getLogger(WebSocketServer.class.getName()).info("Session: " + session.getId() + " has closed the connection with the server.");
     }
 
     @OnError
@@ -40,12 +45,11 @@ public class WebSocketServer {
 
     @OnMessage
     public void handleMessage(String requestMessage, Session session) {
-        Logger.getLogger(WebSocketServer.class.getName()).info("Handling message for session: " + session);
-        try ( JsonReader reader = Json.createReader(new StringReader(requestMessage))) {
+        Logger.getLogger(WebSocketServer.class.getName()).info("\nHandling message for session: " + session.getId() + "\nMessage: " + requestMessage);
+        try (JsonReader reader = Json.createReader(new StringReader(requestMessage))) {
             JsonObject jsonMessage = reader.readObject();
 
             if ("subscribe".equals(jsonMessage.getString("action"))) {
-                System.out.println(jsonMessage);
                 Topic topic = new Topic(jsonMessage.getString("topic_name"));
                 userSessionHandler.subscribeToTopic(topic, session);
             } else if ("publish".equals(jsonMessage.getString("action"))) {
