@@ -93,7 +93,6 @@ public class WebSocketClient {
     public void close() {
         try {
             userSession.close();
-            //onClose(userSession, new CloseReason(CloseReason.CloseCodes.NORMAL_CLOSURE, "quit connection"));
         } catch (IOException ex) {
             Logger.getLogger(WebSocketClient.class.getName()).log(Level.SEVERE, null, ex);
         }
